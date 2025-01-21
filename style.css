@@ -1,1 +1,28 @@
-!
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header{
+border-bottom: 2px solid red;
+padding:10px 0 10px 10px;
+}
+.nav-bar{
+    background-color: blue;
+}
+.nav-bar-list{
+    padding: 20px 0;
+    display: flex;
+    justify-content: space-around;
+}
+.nav-bar-list-items{
+list-style:none;
+color: white;
+font-size: larger;
+font-weight: bolder;
+}
+
+.headerLogo{
+    width: 350px;
+}
