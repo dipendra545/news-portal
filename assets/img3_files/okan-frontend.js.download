@@ -1,0 +1,12 @@
+jQuery(document).ready(function ($) {
+
+    var current_page_url = okan_localized_obj.current_page_url;
+    $.ajax({
+        type: 'post',
+        url: okan_localized_obj.analytics_url,
+        data: {
+            current_page_url
+        }
+    })
+
+});

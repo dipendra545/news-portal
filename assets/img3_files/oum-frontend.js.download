@@ -1,0 +1,491 @@
+function oum_setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function oum_getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function oum_deleteCookie(cname) {
+    // Set the cookie's expiration date to a past date to remove it
+    document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+function getUrlParameter(name) {
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.has(name);  // Returns true if the parameter is present
+}
+
+function handleCredentialResponse(response) {
+    // Log the encoded JWT ID token
+    console.log("Encoded JWT ID token: ", response.credential);
+
+    // Send the ID token to your server for validation and login
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', oum_frontend_script_obj.OUM_GOOGLE_CALLBACK);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            // Handle successful login response
+            console.log("Server response: ", xhr.responseText);
+            window.location.reload();  // Optionally reload after login
+        }
+    };
+    xhr.send('&id_token=' + response.credential);
+}
+
+jQuery(document).ready(function ($) {
+    var running_ajax = 0;
+    /**
+     * User login check
+     */
+    var auth_key = oum_getCookie('ok_reg_user');
+    if (auth_key) {
+        if (running_ajax == 0) {
+            $.ajax({
+                type: 'get',
+                url: oum_frontend_script_obj.api_url + '/user/browser_login_check',
+                data: {
+                    auth_key: auth_key
+                },
+                beforeSend: function (xhr) {
+                    running_ajax = 1;
+                },
+                success: function (res) {
+                    running_ajax = 0;
+                    //res = $.parseJSON(res);
+                    if (res.status == 200) {
+                        if (res.data.auth_key) {
+                            $('.ok-login-trigger').remove();
+                            //var user_bar_template = wp.template('user-bar-template');
+                            var user_menu_template = wp.template('menu-user-template');
+                            // $('body').append(user_bar_template(res.data));
+                            var user_profile_template = wp.template('user-profile-template');
+                            var user_profile_page_template = wp.template('user-profile-page-template');
+                            $('body').append(user_profile_template(res.data));
+                            $('.oku-profile-data-append').html(user_profile_page_template(res.data));
+                            $('.ok-login-condition').html(user_menu_template(res.data)).show();
+                            $('.ok-new-login-button').html('प्रोफाइल').attr('href', $('.ok-new-login-button').data('profile-link'));
+                            if ($('.oum-update-profile-form').length > 0) {
+                                var ok_user_profile_message = oum_getCookie('ok_user_profile_message');
+                                console.log(ok_user_profile_message);
+                                if (ok_user_profile_message != '') {
+                                    ok_user_profile_message = decodeURIComponent(ok_user_profile_message);
+                                    ok_user_profile_message = JSON.parse(ok_user_profile_message);
+                                    if (ok_user_profile_message.status == 200) {
+                                        $('.oum-update-profile-form .form-response-message').html(ok_user_profile_message.message).removeClass('ok-error').addClass('ok-success').slideDown(500);
+                                    } else {
+                                        $('.oum-update-profile-form .form-response-message').html(ok_user_profile_message.message).removeClass('ok-success').addClass('ok-error').slideDown(500);
+                                    }
+                                    oum_deleteCookie('ok_user_profile_message');
+
+                                    setTimeout(function () {
+                                        $('.oum-update-profile-form .form-response-message').slideUp(500);
+                                    }, 4000);
+
+                                }
+                            }
+
+                        } else {
+
+                            var gsiScript = document.createElement('script');
+                            gsiScript.src = "https://accounts.google.com/gsi/client";
+                            gsiScript.async = true;
+                            gsiScript.defer = true;
+                            document.head.appendChild(gsiScript);
+
+                            // Once the script is loaded, initialize Google One Tap
+                            gsiScript.onload = function () {
+                                google.accounts.id.initialize({
+                                    client_id: oum_frontend_script_obj.OUM_CLIENT_ID,
+                                    callback: handleCredentialResponse
+                                });
+                                google.accounts.id.prompt(); // Show One Tap login
+                            }
+
+                        }
+
+                    }
+
+                }
+            });
+        }
+    } else {
+
+        var gsiScript = document.createElement('script');
+        gsiScript.src = "https://accounts.google.com/gsi/client";
+        gsiScript.async = true;
+        gsiScript.defer = true;
+        document.head.appendChild(gsiScript);
+
+        // Once the script is loaded, initialize Google One Tap
+        gsiScript.onload = function () {
+            google.accounts.id.initialize({
+                client_id: oum_frontend_script_obj.OUM_CLIENT_ID,
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.prompt(); // Show One Tap login
+        }
+
+    }
+    /**
+     * User login starts here
+     */
+
+    $('body').on('submit', '.ok-user-login', function (e) {
+        var selector = $(this);
+        e.preventDefault();
+        var username = selector.find('.username').val();
+        var password = selector.find('.password').val();
+        var remember_me = ($('.remember-me').is(':checked')) ? true : false;
+        var redirect_url = selector.closest('form').find('.redirect-url').val();
+        if (username == '' || password == '') {
+            $('.form-message').addClass('ok-error').html('Username and Password both are required.').slideDown(500);
+        } else {
+            if (running_ajax == 0) {
+                $.ajax({
+                    type: 'post',
+                    url: oum_frontend_script_obj.ajax_url,
+                    data: {
+                        action: 'ok_user_login',
+                        username: username,
+                        password: password
+                    },
+                    beforeSend: function (xhr) {
+                        running_ajax = 1;
+                        selector.find('.form-message').slideUp(500);
+                        selector.find('.ajax-loader').show();
+                    },
+                    success: function (res) {
+                        running_ajax = 0;
+                        selector.find('.ajax-loader').hide();
+                        res = $.parseJSON(res);
+                        if (res.status == 200) {
+                            if (res.data.auth_key) {
+                                if (remember_me) {
+                                    oum_setCookie('ok_reg_user', res.data.auth_key, 0.05);
+
+                                } else {
+                                    oum_setCookie('ok_reg_user', res.data.auth_key, 365);
+                                }
+                                if (redirect_url) {
+                                    window.location = redirect_url;
+                                } else {
+                                    location.reload();
+                                }
+
+                            }
+
+                        } else {
+                            selector.find('.form-message').addClass('ok-error').html(res.message).slideDown(500);
+                        }
+
+                    }
+                });
+            }
+        }
+    });
+
+    $('body').on('click', '.user-logout-trigger', function () {
+        if (confirm('Are you sure you want to logout?')) {
+            document.cookie = "ok_reg_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            location.reload();
+        }
+    });
+
+    $('body').on('click', '.ok-social-login-trigger', function (e) {
+        if ($(this).closest('form').find('.redirect-url').length > 0) {
+            var current_page = $(this).closest('form').find('.redirect-url').val();
+        } else {
+            var current_page = window.location.href;
+        }
+        oum_setCookie('ok_login_request_page', current_page);
+    });
+
+    $('body').on('click', '.ok-sidepanel-wrap .oum-overlay', function () {
+        $(this).next().removeClass('reveal-ok-sidemenu');
+        $(this).parent('.ok-sidepanel-wrap').fadeOut();
+    });
+
+    $('body').on('submit', '.oum-comment-form', function (e) {
+        var selector = $(this);
+        e.preventDefault();
+        if (running_ajax == 0) {
+            var comment_text_id = selector.find('.oum-comments-text-input').attr('id');
+            var ok_reg_user = oum_getCookie('ok_reg_user');
+            if (ok_reg_user == '') {
+                var comment_text = selector.find('.oum-comments-text-input').val();
+
+                if (comment_text != '') {
+                    oum_setCookie(comment_text_id, comment_text, 1);
+                }
+                $('.ok-login-form').fadeIn(500);
+            } else {
+                var form_data = selector.serialize();
+
+                $.ajax({
+                    type: 'post',
+                    url: oum_frontend_script_obj.ajax_url,
+                    data: {
+                        action: 'oum_do_comment',
+                        form_data: form_data,
+                        auth_key: ok_reg_user
+                    },
+                    beforeSend: function (xhr) {
+                        running_ajax = 1;
+                        selector.find('.oum-ajax-loader').show();
+                    },
+                    success: function (res) {
+                        running_ajax = 0;
+                        selector.find('.oum-ajax-loader').hide();
+                        res = $.parseJSON(res);
+                        if (res.status == 200) {
+                            selector.find('.form-response-message').html(res.message).removeClass('ok-error').addClass('ok-success').slideDown(500);
+                            selector.find('.oum-comments-text-input').val('');
+                            oum_setCookie(comment_text_id, '');
+                        } else {
+                            selector.find('.form-response-message').html(res.message).removeClass('ok-success').addClass('ok-error').slideDown(500);
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+
+    $('body').on('click', '.reply-btn', function () {
+        $(this).parents('.user-comment-footer').next('.ok-field-for-reply').show();
+    });
+
+    $('body').on('click', '.ok-close-panel', function () {
+        $(this).closest('.ok-sidepanel-wrap').fadeOut(500);
+        $(this).closest('.ok-sidepanel-wrap').find('.ok-sidepanel-body').removeClass('reveal-ok-sidemenu');
+    });
+
+    $('body').on('click', '.user-profile-trigger', function () {
+        $('.ok-user-profile-panel').fadeIn(500);
+        $('.ok-user-profile-panel .ok-sidepanel-body').addClass('reveal-ok-sidemenu');
+    });
+
+    $('body').on('click', '.ok-profile-tab-nav span', function () {
+        var getContentID = $(this).attr('data-rel');
+        $('.ok-profile-tab-nav span').removeClass('active-tab');
+        $(this).addClass('active-tab');
+        $(this).closest('.oum-popup-body').find('.profile-tab-content').hide();
+        $('#' + getContentID).fadeIn();
+    });
+
+    $('body').on('submit', '.oum-update-profile-form1', function (e) {
+        e.preventDefault();
+        if (running_ajax == 0) {
+            var selector = $(this);
+            var form_data = selector.serialize();
+            var ok_reg_user = oum_getCookie('ok_reg_user');
+            $.ajax({
+                type: 'post',
+                url: oum_frontend_script_obj.ajax_url,
+                data: {
+                    action: 'oum_update_profile',
+                    form_data: form_data,
+                    auth_key: ok_reg_user
+                },
+                beforeSend: function (xhr) {
+                    running_ajax = 1;
+                    selector.find('.oum-ajax-loader').show();
+                },
+                success: function (res) {
+                    running_ajax = 0;
+                    selector.find('.oum-ajax-loader').hide();
+                    res = $.parseJSON(res);
+                    if (res.status == 200) {
+                        selector.find('.form-response-message').html(res.message).removeClass('ok-error').addClass('ok-success').slideDown(500);
+                    } else {
+                        selector.find('.form-response-message').html(res.message).removeClass('ok-success').addClass('ok-error').slideDown(500);
+                    }
+                    setTimeout(function () {
+                        selector.find('.form-response-message').slideUp(500);
+                    }, 4000);
+                }
+            });
+        }
+    });
+
+    $('body').on('click', '.oum-commenter-profile-show', function () {
+        if (running_ajax == 0) {
+            var user_id = $(this).data('user-id');
+            if (user_id != '') {
+                $.ajax({
+                    type: 'get',
+                    url: oum_frontend_script_obj.api_url + '/registered-user/' + user_id,
+                    beforeSend: function (xhr) {
+                        running_ajax = 1;
+                    },
+                    success: function (res) {
+                        running_ajax = 0;
+                        if (res.status == 200) {
+                            var reg_user_profile_template = wp.template('reg-user-template');
+                            $('.ok-reg-user-profile-panel').html(reg_user_profile_template(res.data));
+                            $('.ok-reg-user-profile-panel').fadeIn(500);
+                            $('.ok-reg-user-profile-panel .ok-sidepanel-body').addClass('reveal-ok-sidemenu');
+                        }
+
+                    }
+                });
+            }
+        }
+    });
+
+    $('body').on('click', '.ok-signup-trigger', function () {
+        $('.ok-signup-form').fadeIn(500);
+    });
+
+    $('body').on('submit', '#oum-signup-form', function (e) {
+        e.preventDefault();
+        if (running_ajax == 0) {
+            var selector = $(this);
+            var form_data = $(this).serialize();
+            $.ajax({
+                type: 'post',
+                url: oum_frontend_script_obj.ajax_url,
+                data: {
+                    form_data: form_data,
+                    action: 'oum_signup_action'
+                },
+                beforeSend: function () {
+                    running_ajax = 1;
+                    $('.ok-form-message').slideUp();
+                    selector.find('.ok-ajax-loader').show();
+                },
+                success: function (res) {
+                    running_ajax = 0;
+                    selector.find('.ok-ajax-loader').hide();
+                    res = $.parseJSON(res);
+                    if (res.status == 200) {
+                        $('#oum-signup-form').slideUp(500);
+                        selector.closest('.ok-signup-popup-card').find('.ok-form-message').addClass('ok-success').html(res.message).slideDown();
+                    } else {
+                        selector.closest('.ok-signup-popup-card').find('.ok-form-message').addClass('ok-error').html(res.message).slideDown();
+                    }
+
+                }
+            });
+        }
+    });
+    $('body').on('submit', '.ok-user-signup', function (e) {
+        e.preventDefault();
+        if (running_ajax == 0) {
+            var selector = $(this);
+            var form_data = $(this).serialize();
+            $.ajax({
+                type: 'post',
+                url: oum_frontend_script_obj.ajax_url,
+                data: {
+                    form_data: form_data,
+                    action: 'oum_signup_action'
+                },
+                beforeSend: function () {
+                    running_ajax = 1;
+                    $('.ok-form-message').slideUp();
+                    selector.find('.ok-ajax-loader').show();
+                },
+                success: function (res) {
+                    running_ajax = 0;
+                    selector.find('.ok-ajax-loader').hide();
+                    res = $.parseJSON(res);
+                    if (res.status == 200) {
+                        $('#oum-signup-form').slideUp(500);
+                        selector.find('.ok-form-message').addClass('ok-success').html(res.message).slideDown();
+                    } else {
+                        selector.find('.ok-form-message').addClass('ok-error').html(res.message).slideDown();
+                    }
+
+                }
+            });
+        }
+    });
+
+    $('body').on('click', '.ok-forget-password-trigger', function () {
+        $('.ok-forget-password-form').show();
+        $('.ok-user-login').hide();
+    });
+    $('body').on('click', '.ok-login-form-show', function () {
+        var selector = $(this);
+        selector.closest('.ok-login-form').find('.ok-forget-password-form').hide();
+        selector.closest('.ok-login-form').find('.ok-user-login').show();
+    });
+    $('body').on('submit', '.ok-forget-password-form', function (e) {
+        e.preventDefault();
+        if (running_ajax == 0) {
+            var selector = $(this);
+            var email = selector.find('.reset-email').val();
+            if (email != '') {
+                $.ajax({
+                    type: 'post',
+                    url: oum_frontend_script_obj.ajax_url,
+                    data: {
+                        reset_email: email,
+                        action: 'oum_forget_password_action'
+                    },
+                    beforeSend: function () {
+                        running_ajax = 1;
+                        $('.ok-forget-password-message').slideUp();
+                        selector.find('.ok-ajax-loader').show();
+                    },
+                    success: function (res) {
+                        running_ajax = 0;
+                        selector.find('.ok-ajax-loader').hide();
+                        res = $.parseJSON(res);
+                        if (res.status == 200) {
+                            selector.find('.ok-forget-password-message').removeClass('ok-error').addClass('ok-success').html(res.message).slideDown();
+                            selector.trigger('reset');
+                        } else {
+                            selector.find('.ok-forget-password-message').removeClass('ok-success').addClass('ok-error').html(res.message).slideDown();
+                        }
+
+                    }
+                });
+            }
+        }
+    });
+    /*
+        $('body').on('focus', '.oum-comments-text-input', function () {
+            var ok_reg_user = oum_getCookie('ok_reg_user');
+            if (ok_reg_user == '') {
+                // $('.ok-conv-login-for-new').hide();
+                // $(this).closest('.ok-conv-wrap').find('.ok-conv-login-for-new').slideDown();
+                // $(this).closest('.ok-conv-wrap').find('.ok-conv-login-for-new').animate({
+                //     scrollTop: 100
+                // }, 400);
+                $('.ok-login-form').fadeIn(500);
+            }
+        });
+        */
+    /*
+ setTimeout(function () {
+     $('.oum-comments-text-input').each(function () {
+         var id = $(this).attr('id');
+         var id_array = id.split('_');
+         var comment_text = oum_getCookie(id);
+         if (comment_text) {
+             $(this).val(comment_text);
+             if (id_array[id_array.length - 1] != 0) {
+                 $(this).closest('.ok-field-for-reply').show();
+             }
+         }
+     });
+ }, 4000);
+*/
+});

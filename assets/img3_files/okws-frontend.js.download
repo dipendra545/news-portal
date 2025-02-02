@@ -1,0 +1,125 @@
+
+document.addEventListener("DOMContentLoaded", function () {
+    const shareButtons = document.getElementsByClassName('okws-share-story-button');
+
+    if (shareButtons.length > 0) {
+        for (let i = 0; i < shareButtons.length; i++) {
+            const shareButton = shareButtons[i];
+
+            // Check if Web Share API is supported
+            if (navigator.share) {
+                shareButton.addEventListener('click', async () => {
+                    try {
+                        // Use navigator.share() to share data
+                        await navigator.share({
+                            title: document.title,
+                            text: document.title,
+                            url: window.location.href,
+                        });
+                        console.log('Content shared successfully');
+                    } catch (error) {
+                        console.error('Error sharing content:', error);
+                    }
+                });
+            } else {
+                // Fallback for unsupported browsers
+                shareButton.style.display = 'none'; // Hide the button if Web Share API is not supported
+            }
+        }
+    }
+
+    if (document.querySelector(".story__slide .post_image")) {
+        const firstSlidePostImage = document.querySelector(".story__slide .post_image");
+        const defaultBackgroundImage = firstSlidePostImage ? firstSlidePostImage.src : '';
+
+        const slider = new Swiper(".story__slider", {
+            speed: 1,
+            watchSlidesProgress: true,
+            loop: false, // Set loop to false to prevent autoplay from looping back to the first slide
+            autoplay: {
+                delay: 10000,
+                disableOnInteraction: false,
+                stopOnLastSlide: true // Autoplay will stop on the last slide
+            },
+            slidesPerView: 1,
+            navigation: {
+                nextEl: ".story__next",
+                prevEl: ".story__prev"
+            },
+            pagination: {
+                el: ".story__pagination",
+                renderBullet: function (index, className) {
+                    return `<div class="${className}"> <div class="swiper-pagination-progress"></div> </div>`;
+                }
+            },
+
+            on: {
+                autoplayTimeLeft(swiper, time, progress) {
+                    let currentSlide = document.querySelectorAll(
+                        ".story__slider .swiper-slide"
+                    )[swiper.activeIndex];
+                    let currentBullet = document.querySelectorAll(
+                        ".story__slider .swiper-pagination-progress"
+                    )[swiper.realIndex];
+                    let fullTime = currentSlide.dataset.swiperAutoplay ?
+                        parseInt(currentSlide.dataset.swiperAutoplay) :
+                        swiper.params.autoplay.delay;
+
+                    let percentage =
+                        Math.min(
+                            Math.max(
+                                parseFloat((((fullTime - time) * 100) / fullTime).toFixed(1)),
+                                0
+                            ),
+                            100
+                        ) + "%";
+
+                    gsap.set(currentBullet, {
+                        width: percentage
+                    });
+                },
+
+                transitionEnd(swiper) {
+                    let allBullets = document.querySelectorAll(
+                        ".story__slider .swiper-pagination-progress"
+                    );
+                    let bulletsBefore = Array.from(allBullets).slice(0, swiper.realIndex);
+                    let bulletsAfter = Array.from(allBullets).slice(
+                        swiper.realIndex,
+                        allBullets.length
+                    );
+                    if (bulletsBefore.length) {
+                        gsap.set(bulletsBefore, {
+                            width: "100%"
+                        });
+                    }
+                    if (bulletsAfter.length) {
+                        gsap.set(bulletsAfter, {
+                            width: "0%"
+                        });
+                    }
+
+                    let activeSlide = document.querySelectorAll(
+                        ".story__slider .swiper-slide"
+                    )[swiper.realIndex];
+                    if (activeSlide.querySelector("video")) {
+                        activeSlide.querySelector("video").currentTime = 0;
+                    }
+
+                    // Change background image based on current slide
+                    const currentSlide = swiper.slides[swiper.realIndex];
+                    const postImage = currentSlide.querySelector(".post_image");
+                    if (postImage) {
+                        const parent = document.querySelector(".dynamic_blur_bg");
+                        parent.style.backgroundImage = `url('${postImage.src}')`;
+                    }
+
+                }
+            }
+        });
+
+        // Set the default background image initially
+        const parent = document.querySelector(".dynamic_blur_bg");
+        parent.style.backgroundImage = `url('${defaultBackgroundImage}')`;
+    }
+});

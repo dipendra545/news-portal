@@ -1,0 +1,231 @@
+.q-f-card.q-f-card-live {
+  background: linear-gradient(269.83deg, #6c60fa 0.8%, #1685f8 69.59%);
+  border-color: transparent;
+}
+.q-f-card.q-f-card-live .q-f-card-top .schedule-date {
+  color: #fff;
+}
+
+.q-f-card.q-f-card-live .a-f-card-bottom,
+.q-f-card.q-f-card-live .a-f-card-bottom > .btn-wrapper > a {
+  border-color: #e4e4e457;
+}
+
+.q-f-card.q-f-card-live .a-f-card-bottom > .btn-wrapper > a {
+  color: #fff;
+}
+
+.q-f-card.q-f-card-live > * {
+  color: #fff;
+}
+
+.q-f-card.q-f-card-live .stadium-name {
+  opacity: 85%;
+  font-size: 10px;
+}
+
+/* .q-f-card.q-f-card-live .competing-teams .match-team .infos .has_won_flag {
+  background-color: #eb9a60;
+} */
+
+/* .match-team-lost {
+  opacity: 50%;
+} */
+
+.scores-over {
+  opacity: 85%;
+}
+
+.competing-teams .match-team > span.scores {
+  font-weight: bold;
+}
+
+.quick-fixure-wrap .q-f-tournament-navs .nav-items > span.active::after {
+  height: 3px;
+  background-color: #ff6b6b;
+}
+
+.quick-fixure-wrap .q-f-tournament-navs .nav-items > span.active {
+  color: #1685f8;
+  background: #e0f0ff;
+}
+
+.match-team-info .match-team .infos h5 {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.match-team-info .vs {
+  height: 50px;
+  width: 50px;
+  min-width: 50px;
+  max-width: 50px;
+  line-height: 50px;
+  font-size: 19px;
+}
+
+.match-team-info .match-team .infos h5 {
+  font-size: 16px;
+  margin: 0 !important;
+}
+
+/* #fixtures-filter {
+  margin-left: auto;
+  background: #1685f852;
+  border: none;
+  padding: 0;
+  font-weight: bold;
+  font-size: 18px;
+  padding-left: 11px;
+  width: auto;
+  cursor: pointer;
+  color: #333;
+  font-family: "Mukta", sans-serif;
+  padding-top: 2px;
+  text-transform: uppercase;
+} */
+#fixtures-filter {
+  margin-top: -64px;
+  width: 110px;
+  text-overflow: ellipsis;
+  color: #212529;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTc5MiAxNzkyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xNDA4IDcwNHEwIDI2LTE5IDQ1bC00NDggNDQ4cS0xOSAxOS00NSAxOXQtNDUtMTlMNDAzIDc0OXEtMTktMTktMTktNDV0MTktNDUgNDUtMTloODk2cTI2IDAgNDUgMTl0MTkgNDV6IiBmaWxsPSIjNGU0ZTRlIiBjbGFzcz0iZmlsbC0wMDAwMDAiPjwvcGF0aD48L3N2Zz4=");
+  background-repeat: no-repeat;
+  background-position: right 0.4rem center;
+  background-size: 16px 16px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 0 14px;
+  line-height: 37px;
+  display: inline-block;
+  /* margin-right: 5px; */
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  font-family: "Mukta", sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  background-color: transparent;
+  color: #4e4e4e;
+  padding-right: 30px;
+  text-align: center;
+  margin-left: auto;
+  display: flex;
+  margin-bottom: 25px;
+  border: solid 1px rgba(0,0,0,.2);
+  border-radius: 4px;
+}
+
+#fixtures-filter option {
+  font-size: 16px;
+  font-family: "Mukta", sans-serif;
+  cursor: pointer;
+}
+
+.q-f-card .q-f-card-top .schedule-time {
+  font-size: 10px;
+  margin-left: auto;
+}
+
+.q-f-card .stadium-name > svg path {
+  fill: #4e4e4e;
+}
+
+.post-info-sticky #st-1 .st-btn {
+  line-height: 45px;
+}
+
+.st-btn.st-first.st-remove-label img {
+  width: 25px !important;
+  height: 25px !important;
+}
+
+.post-info-sticky #st-1 .st-btn.st-first {
+  line-height: 43px;
+}
+
+@media (max-width: 1135px) {
+  #fixtures-filter {
+    margin-top: 0;
+  }
+
+  .okv4_sport_tournament_header .secondary_title {
+    font-size: 33px;
+  }
+
+  .okv4_sport_tournament_header .secondary_title.txt_eng{
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  .cric-generic-table .player-thumb {
+    min-width: 158px;
+  }
+}
+
+@media (max-width: 514px) {
+  .cric-generic-table table tr td,
+  .cric-generic-table table tr:first-child td {
+    text-align: center;
+  }
+}
+
+@media (max-width: 1023px) {
+  #st-1 {
+    display: block !important;
+  }
+}
+
+@media (max-width: 767px) {
+  #st-1 {
+    display: flex !important;
+  }
+
+  .ok-single-content-parent .title-info-vr-sticky .okv4-title-info-right {
+    justify-content: left;
+  }
+
+  #st-1 .st-total {
+    margin-right: 15px !important;
+  }
+  .cric_result_home .match-status {
+	position: relative;
+}
+
+.cric_result_home .match-team {
+	padding-bottom: 25px;
+}
+
+.cric_result_home .result_note {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+    border-top: solid 1px rgba(255,255,255,.1);
+}
+
+}
+span.over-ball-event {
+  display: inline-block;
+  border: 1px solid;
+  padding: 2px 4px;
+}
+.okcapi-striker {
+  margin-right: 10px;
+}
+
+@media all and (max-width: 767px){
+  .post-info-sticky #st-1 .st-btn.st-first,
+  .post-info-sticky #st-1 .st-btn{
+    line-height: 34px;
+  }
+  .post-info-sticky #st-1 .st-btn, .post-info-sticky #st-2 .st-btn{
+    height: 40px !important;
+    width: 40px !important;
+  }
+  #post-info-sticky .st-total{
+    margin-right: 12px !important;
+  }
+}

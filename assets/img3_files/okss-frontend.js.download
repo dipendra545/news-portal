@@ -1,0 +1,52 @@
+function okss_setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function okss_getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+jQuery(document).ready(function ($) {
+    if ($('#module-chapter-id').length > 0) {
+        var module_chapter_id = $('#module-chapter-id').val();
+        var module_total_chapters = $('#module-total-chapters').val();
+        var module_id = $('#module-id').val();
+        var module_cookie_key = 'okss_' + module_id + '_total_chapters';
+        var module_read_chapter_cookie_key = 'okss_read_module_' + module_id;
+        var module_read_chapters = okss_getCookie(module_read_chapter_cookie_key);
+        var module_chapter_key = module_id + '_' + module_chapter_id;
+        if (!module_read_chapters) {
+            module_read_chapters = '';
+            var module_read_chapters_array = [];
+        } else {
+
+            var module_read_chapters_array = module_read_chapters.split(',');
+        }
+        console.log(module_read_chapters_array);
+        if (!module_read_chapters_array.includes(module_chapter_key)) {
+            module_read_chapters_array.push(module_chapter_key);
+        }
+
+        module_read_chapters = module_read_chapters_array.join(',');
+        var total_read_chapters = module_read_chapters_array.length;
+        var total_read_percentage = (total_read_chapters / module_total_chapters) * 100;
+        $('.okss-module-read-percent').attr('data-completed', Math.floor(total_read_percentage));
+        // $('.okss-module-read-percent').html(Math.floor(total_read_percentage));
+        okss_setCookie(module_read_chapter_cookie_key, module_read_chapters);
+
+
+    }
+})

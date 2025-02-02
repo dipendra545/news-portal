@@ -1,0 +1,90 @@
+jQuery(document).ready(function ($) {
+    $('body').on('submit', '.ask-doc-form', function (e) {
+        e.preventDefault();
+        var selector = $(this);
+        var form_data = $(this).serialize();
+        $.ajax({
+            type: 'post',
+            url: okhm_js_obj.ajax_url,
+            data: {
+                form_data,
+                action: 'okhm_doc_question_action'
+            },
+            beforeSend: function () {
+                selector.find('.ok-ajax-loader').show();
+            },
+            success: function (res) {
+                selector.find('.ok-ajax-loader').hide();
+                res = $.parseJSON(res);
+                if (res.status == 200) {
+                    selector.find('.okhm-doc-question-response').html(res.message);
+                    selector[0].reset();
+                }
+            }
+        })
+    });
+
+    $('body').on('change', '#health-segment-qa-filter', function () {
+        var health_segment_id = $(this).val();
+        var selector = $(this);
+        $.ajax({
+            type: 'get',
+            url: okhm_js_obj.ajax_url,
+            data: {
+                health_segment_id,
+                action: 'okhm_doc_qa_filter'
+            },
+            beforeSend: function () {
+                selector.parent().find('.ok-ajax-loader').show();
+            },
+            success: function (res) {
+                selector.parent().find('.ok-ajax-loader').hide();
+                selector.closest('.ok-block-forum').find('.q-n-ans-wrap').html(res);
+            }
+        })
+    });
+
+    $('body').on('submit', '#bmi-calculator-form', function (e) {
+        e.preventDefault();
+        var weight = parseFloat($('.bmi-weight').val());
+        var heightFeet = parseFloat($('.bmi-height').val());
+
+        // Convert height to meters 
+        if (!isNaN(heightFeet)) {
+            heightMeters = heightFeet / 3.28084;
+        }
+
+        // Calculate BMI
+        var bmi = weight / (heightMeters * heightMeters);
+
+
+        bmi = bmi.toFixed(2);
+
+        // Classify BMI
+        var classification = "";
+        if (bmi < 18.5) {
+            classification = "Underweight";
+        } else if (bmi >= 18.5 && bmi < 24.9) {
+            classification = "Normal (Ideal) Weight";
+        } else if (bmi >= 25 && bmi < 29.9) {
+            classification = "Overweight";
+        } else {
+            classification = "Obese";
+        }
+
+        // Display classification
+        $('.bmi-result-num').html('BMI: ' + bmi + ' ' + classification);
+
+
+    });
+    $('body').on('change', '.ok-go-url-dropdown', function () {
+        var url = $(this).val();
+        if (url != '') {
+            window.location = url;
+            exit;
+        }
+    });
+    $('body').on('change', '.ok-form-submit-dropdown', function () {
+        $(this).closest('form').submit();
+    });
+})

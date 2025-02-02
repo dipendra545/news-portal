@@ -1,0 +1,403 @@
+.bar-left-section{float:left;}
+.bar-right-section{float:right;margin-top: 15px;}
+.ok-user-bar {
+    position: fixed;
+    bottom: 0;
+    background: #0e5dae;
+    color: #fff;
+    z-index: 9999;
+    width: 100%;
+    padding:10px;
+}
+a#user-logout-trigger {
+    margin-right: 20px;
+    color: #fff;
+    text-decoration: none;
+    margin-top: 10px;
+}
+.ok-clearfix::after{
+    content: "";
+  clear: both;
+  display: table;
+}
+span.user-gravatar {
+    width: 50px;
+    display: inline-block;
+}
+.ok-user-bar a {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 10px;
+}
+.ok-user-bar a:hover{color:#f2f2f2;}
+span.username-info {
+    vertical-align: middle;
+    display: inline-block;
+    margin-top: -25px;
+}
+.oum-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: #222;
+    z-index: 99999;
+    opacity: 0.85;
+}
+
+.oum-relative{position: relative;}
+.oum-popup-header h3 {
+    float: left;
+    width: 80%;
+}
+a.oum-popup-close {
+    float: right;
+}
+.oum-each-row {
+    padding: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #bbb;
+}
+.oum-each-row label {
+    display: inline-block;
+    width: 125px;
+    margin-right: 10px;
+}
+
+.ok-sidepanel-wrap .oum-overlay{cursor: pointer}
+
+.oum-value {
+    display: inline-block;
+    width: calc(100% - 150px);
+}
+.oum-value input[type="text"] {
+    width: 100%;
+}
+.oum-profile-wrap {
+    position: fixed;
+    top: 20%;
+    left: 22%;
+    z-index: 999999;
+    background: #fff;
+    padding: 20px;
+    width: 60%;
+    height: 500px;
+    overflow-y: scroll;
+}
+.oum-profile-wrap .oum-each-row:last-child {
+    border-bottom: none;
+}
+.oum-each-comment {
+    margin: 0;
+    border-bottom: solid 1px rgba(0,0,0,.1);
+}
+.oum-each-comment .oum-each-comment{
+    border-bottom: none;
+    background-color: #f8fafd;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    margin-top: 15px;
+    padding: 20px;
+}
+.oum-each-comment .oum-each-comment:last-child{
+    margin-bottom: 0;
+}
+.oum-comment-post-title a {
+    font-size: 20px;
+    text-decoration: none;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.quick-comment-lists .ok-user-info-section h3{font-size: 30px;}
+.quick-comment-lists .user-icon >img{
+    max-width: 50px;
+    width: 50px;
+    min-width: 50px;
+    margin-right: 20px;
+    align-self: center;
+}
+
+.quick-comment-lists .user-icon h3{margin: 0;}
+.quick-comment-lists .user-icon h3 a{
+    text-decoration: none;
+    color:#2260bf;
+}
+
+.quick-comment-lists .oum-each-comment{
+    padding:15px 0 20px;
+}
+.quick-comment-lists .oum-each-comment .oum-each-comment{
+    padding: 20px;
+    margin-left: 24px;
+}
+.quick-comment-lists .oum-each-comment:first-child{padding-top: 0;}
+.quick-comment-lists .ok-btn-wrapper{padding: 15px 20px 20px;}
+.quick-comment-lists .ok-btn-wrapper>a{display: block;text-align: center;font-size: 18px;font-weight: 500;}
+.quick-comment-lists .ok-profile-wrap .oum-popup-body{max-height: calc(100% - 180px);}
+.quick-comment-lists .ok-user-info-section h3 > span{
+    display: inline-block;
+    margin-left: 10px;
+    background-color: rgba(0,0,0,.06);
+    font-size: 15px;
+    padding: 0 10px;
+    line-height: 30px;
+    vertical-align: top;
+    border-radius: 4px;
+}
+
+/*User profile panel*/
+.ok-user-profile-panel{
+    position: relative;
+    z-index: 999;
+}
+.ok-profile-wrap{
+    position: fixed;
+    top: 0;
+    right: -200%;
+    z-index: 999999;
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    max-width: 408px;
+    padding: 0;
+    transition: all .3s ease-in-out;
+}
+
+.ok-profile-wrap .oum-popup-body{
+    height: 100%;
+    max-height: calc(100% - 111px);
+    overflow-y: auto;
+}
+
+.ok-user-info-section{
+    position: relative;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-bottom: solid 1px rgba(0,0,0,.1);
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #f8fafd;
+}
+
+.ok-user-info-section h3{
+    margin-bottom: 0;
+    margin-top: 0;
+    color: #2260bf;
+    line-height: 1;
+}
+.ok-user-profile-icon{
+    background-color: black;
+    border: solid 5px white;
+    outline: solid 1px rgba(0,0,0,.08);
+    height: 70px;
+    width: 70px;
+    max-width: 70px;
+    min-width: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 20px;
+    flex: 1;
+}
+
+.ok-uer-profile-info-wrap{
+    flex: 2;
+    align-self: center;
+
+}
+
+.ok-user-profile-icon > img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.ok-user-email{
+    font-weight: 300;
+    font-size: 16px;
+}
+
+.ok-user-register-date{
+    font-size: 14px;
+    font-style: italic;
+    color: rgba(0,0,0,.48);
+}
+
+.ok-close-panel{
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 20px;
+    font-size: 28px;
+    transform: rotate(45deg);
+    cursor: pointer;
+    color: #2260bf;
+    text-decoration: none;
+}
+
+.oum-popup-body{
+    padding: 0 20px 20px;
+}
+
+.ok-toggle-btn{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+/*Tab styles*/
+.ok-profile-tab-nav{
+   padding-bottom: 20px;
+}
+.ok-profile-tab-nav span{
+    display: inline-block;
+    line-height: 28px;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 6px 15px;
+    cursor: pointer;
+    color: rgba(0,0,0,.38);
+    transition: all .3s ease;
+    background-color: rgba(0,0,0,.04);
+}
+.ok-profile-tab-nav span:hover{
+    color: rgba(0,0,0,.8);
+}
+.ok-profile-tab-nav span.active-tab{
+    background-color: #ddecff;
+    color: #2260bf;
+    font-weight: 700;
+    border-radius: 3px;
+}
+
+.profile-tab-content{
+    display: none;
+    padding: 0 15px;
+}
+
+.ok-sidepanel-wrap{
+    display: none;
+    position: relative;
+    z-index: 999;
+}
+
+.reveal-ok-sidemenu{
+    right: 0;
+}
+.likes-wrapper{display: flex;flex-wrap: wrap;align-items: center}
+.oum-comment-like,
+.oum-comment-dislike{margin-right: 10px;font-size: 12px;}
+.oum-comment-like i{font-size: 14px;display: inline-block;margin-right: 5px;opacity: 0.24;}
+.oum-comment-dislike i{font-size: 14px;display: inline-block;margin-right: 5px;opacity: 0.24;}
+
+.oum-comment-post-title a{
+    display: block;
+    font-weight: 600;
+    font-size: 18px;
+    color: rgba(0,0,0,.68);
+    transition: all .3s ease;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.oum-comment-date{
+    font-size: 13px;
+    color: rgba(0,0,0,.48);
+}
+
+.oum-comment-post-title a:hover{
+    color: #2260bf;
+}
+
+.ok-reg-user-profile-panel .oum-each-comment,
+.profile-tab-content .oum-each-comment{
+    padding: 20px;
+    /*background-color: #f8fafd;*/
+    border-radius: 0;
+    border-bottom: solid 1px rgba(0,0,0,.1);
+    margin: 0;
+}
+
+.profile-tab-content .oum-each-comment{
+    padding: 0 0 20px;
+}
+
+.profile-tab-content .oum-each-comment:not(:first-child){
+    margin-top: 20px;
+}
+
+.oum-comment-text{
+    margin:10px 0;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.ok-login-item-wrap{
+    display: flex;
+    flex-wrap: wrap;
+}
+.ok-conv-login-for-new{flex: 2;}
+.ok-login-desc{
+    padding:40px;
+    flex: 1;
+    max-width: 440px;
+    min-width: 440px;
+}
+
+.ok-login-desc h4{
+    margin: 0 0 20px;
+    font-size: 24px;
+    color: #2260bf;
+}
+
+.ok-login-desc ul{
+    counter-reset: list-number;
+}
+
+.ok-login-desc ul li{
+    counter-increment: list-number;
+    position: relative;
+    padding-left: 40px;
+    font-size: 16px;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    color: #5e6a7d;
+}
+
+.ok-login-desc ul li:last-child{
+    margin-bottom: 0;
+}
+
+.ok-profile-tab-nav{
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 99;
+}
+
+.ok-login-desc ul li:before{
+    content: counter(list-number);
+    height: 28px;
+    width: 28px;
+    line-height: 28px;
+    font-weight: 800;
+    font-size: 16px;
+    background-color: #dde9fb;
+    color: #7d9ccc;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    border: solid 1px #c8ddff;
+}
+
+.quick-comment-lists .user-icon > img{
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+@media all and (max-width: 767px) {
+    .ok-profile-wrap{max-width: 360px;}
+}
